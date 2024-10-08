@@ -4,11 +4,9 @@ channels:
 dependencies:
   - python=3.10
   - flask
+  - flask-cors
   - numpy
   - pandas
   - matplotlib
   - flake8
-  - pytest
   - pip
-  - pip:
-    - flask-cors
