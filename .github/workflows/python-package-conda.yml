@@ -23,7 +23,11 @@ jobs:
         python-version: 3.10
 
     - name: Create Conda environment
-      run: conda env update --file environment.yml --name base
+      run: |
+        conda info
+        conda config --show-sources
+        conda env update --file environment.yml --name base
+      shell: bash
 
     - name: Activate Conda environment
       run: echo "conda activate base" >> $GITHUB_ENV
