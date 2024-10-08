@@ -1,12 +1,14 @@
-name: myenv
+name: base
 channels:
   - defaults
 dependencies:
-  - python=3.8
+  - python=3.10
   - flask
   - numpy
   - pandas
   - matplotlib
+  - flake8
+  - pytest
   - pip
   - pip:
     - flask-cors
