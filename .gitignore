@@ -1,1 +1,4 @@
 /client/node_modules
+secret.txt
+/.github/workflows
+/server\__pycache__
