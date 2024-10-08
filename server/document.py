@@ -52,13 +52,21 @@ def latent_semantic_indexing(documents_matrix, k=2):
     return reduced_matrix
 
 
-def calculate_similarity(query_vector, document_matrix):
+def calculate_cosine_similarity(query_vector, document_matrix):
     similarities = []
     for doc_vector in document_matrix.T:
         similarity = np.dot(query_vector, doc_vector) / \
             (np.linalg.norm(query_vector) * np.linalg.norm(doc_vector))
         similarities.append(similarity)
     return similarities
+
+
+def calculate_euclidean_distance(query_vector, document_matrix):
+    distances = []
+    for doc_vector in document_matrix.T:
+        distance = np.linalg.norm(query_vector - doc_vector)
+        distances.append(distance)
+    return distances
 
 
 # Create the documents matrix
@@ -71,10 +79,14 @@ lsi_matrix = latent_semantic_indexing(documents_matrix)
 lsi_df = pd.DataFrame(lsi_matrix, index=words, columns=[
                       f'Doc{i+1}' for i in range(lsi_matrix.shape[1])])
 
-# Function to get similarity scores
-
-
-def get_similarity_scores(query_counts):
+# Function to get similarity scores using cosine similarity
+def get_cosine_similarity_scores(query_counts):
     query_vector = np.array([query_counts.get(word, 0) for word in words])
-    similarities = calculate_similarity(query_vector, lsi_matrix)
-    return sorted(zip(lsi_df.columns, similarities), key=lambda x: x[1])
+    similarities = calculate_cosine_similarity(query_vector, lsi_matrix)
+    return sorted(zip(lsi_df.columns, similarities), key=lambda x: x[1], reverse=True)
+
+# Function to get similarity scores using Euclidean distance
+def get_euclidean_distance_scores(query_counts):
+    query_vector = np.array([query_counts.get(word, 0) for word in words])
+    distances = calculate_euclidean_distance(query_vector, lsi_matrix)
+    return sorted(zip(lsi_df.columns, distances), key=lambda x: x[1], reverse=True)

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
 import './App.css';
+
 function App() {
   // State to hold the query input value
   const [query, setQuery] = useState('');
@@ -11,7 +14,8 @@ function App() {
     tiger: 0,
   });
   // State to hold the similarity scores
-  const [similarities, setSimilarities] = useState([]);
+  const [cosineSimilarities, setCosineSimilarities] = useState([]);
+  const [euclideanDistances, setEuclideanDistances] = useState([]);
 
   // Handle input change for word counts
   const handleWordCountChange = (event) => {
@@ -38,75 +42,112 @@ function App() {
     });
 
     const result = await response.json();
-    setSimilarities(result.similarities);
+    setCosineSimilarities(result.cosine_similarities);
+    setEuclideanDistances(result.euclidean_distances);
+  };
+
+  // Prepare data for the cosine similarity chart
+  const cosineChartData = {
+    labels: cosineSimilarities.map(([doc]) => doc),
+    datasets: [
+      {
+        label: 'Cosine Similarity Score',
+        data: cosineSimilarities.map(([, score]) => score),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)', // Darker blue
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Prepare data for the Euclidean distance chart
+  const euclideanChartData = {
+    labels: euclideanDistances.map(([doc]) => doc),
+    datasets: [
+      {
+        label: 'Euclidean Distance',
+        data: euclideanDistances.map(([, distance]) => distance),
+        backgroundColor: 'rgba(255, 159, 64, 0.6)', // Darker orange
+        borderColor: 'rgba(255, 159, 64, 1)',
+        borderWidth: 1,
+      },
+    ],
   };
 
   return (
     <div className="App">
-      <h1>Test</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Bird:
-            <input
-              type="number"
-              name="bird"
-              value={wordCounts.bird}
-              onChange={handleWordCountChange}
-            />
-          </label>
+      <h1 className="header">Latent Semantic Model</h1>
+      <div className="container">
+        <div className="input-wrapper">
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label>
+                Bird:
+                <input
+                  type="number"
+                  name="bird"
+                  value={wordCounts.bird}
+                  onChange={handleWordCountChange}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Cat:
+                <input
+                  type="number"
+                  name="cat"
+                  value={wordCounts.cat}
+                  onChange={handleWordCountChange}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Dog:
+                <input
+                  type="number"
+                  name="dog"
+                  value={wordCounts.dog}
+                  onChange={handleWordCountChange}
+                />
+              </label>
+            </div>
+            <div>
+              <label>
+                Tiger:
+                <input
+                  type="number"
+                  name="tiger"
+                  value={wordCounts.tiger}
+                  onChange={handleWordCountChange}
+                />
+              </label>
+            </div>
+            <button type="submit">Submit</button>
+          </form>
         </div>
-        <div>
-          <label>
-            Cat:
-            <input
-              type="number"
-              name="cat"
-              value={wordCounts.cat}
-              onChange={handleWordCountChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Dog:
-            <input
-              type="number"
-              name="dog"
-              value={wordCounts.dog}
-              onChange={handleWordCountChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Tiger:
-            <input
-              type="number"
-              name="tiger"
-              value={wordCounts.tiger}
-              onChange={handleWordCountChange}
-            />
-          </label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-      <h2>Query List</h2>
-      <ul>
-        {Object.entries(wordCounts).map(([word, count], index) => (
-          <li key={index}>{word}: {count}</li>
-        ))}
-      </ul>
-      {similarities.length > 0 && (
-        <div>
-          <h2>Similarity Scores</h2>
+        <div className="output-wrapper">
+          <h2>Query List</h2>
           <ul>
-            {similarities.map(([doc, score], index) => (
-              <li key={index}>{doc}: {score.toFixed(4)}</li>
+            {Object.entries(wordCounts).map(([word, count], index) => (
+              <li key={index}>{word}: {count}</li>
             ))}
           </ul>
+          {cosineSimilarities.length > 0 && (
+            <div>
+              <h2>Cosine Similarity Scores</h2>
+              <Bar data={cosineChartData} />
+            </div>
+          )}
+          {euclideanDistances.length > 0 && (
+            <div>
+              <h2>Euclidean Distances</h2>
+              <Bar data={euclideanChartData} />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

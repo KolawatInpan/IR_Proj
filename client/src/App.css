@@ -1,66 +1,109 @@
-/* App.css */
-
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
     margin: 0;
     padding: 0;
 }
 
 .App {
-    max-width: 600px;
+    max-width: 1200px;
     margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
 h1 {
-    font-size: 24px;
-    color: #333;
+    font-size: 32px;
+    color: #2c3e50;
     text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+}
+
+.input-wrapper {
+    width: 300px; /* Fixed width for the input section */
+    height: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.output-wrapper {
+    flex: 1; /* Allow the output section to grow */
+    padding: 20px;
+    background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: auto; /* Add scroll if content overflows */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.output-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
 
 label {
-    font-size: 16px;
-    color: #555;
+    font-size: 18px;
+    color: #2c3e50;
 }
 
 input[type="number"] {
-    padding: 8px;
+    padding: 12px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
     width: 100%;
     box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
 button {
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     color: #fff;
-    background-color: #007bff;
+    background-color: #ff7e5f; /* Harmonious button color */
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #ff6b4a; /* Slightly darker shade for hover effect */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 126, 95, 0.3);
 }
 
 h2 {
-    font-size: 20px;
-    color: #333;
-    margin-top: 20px;
+    font-size: 24px;
+    color: #2c3e50;
+    margin-top: 25px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 ul {
@@ -70,6 +113,12 @@ ul {
 
 li {
     font-size: 16px;
-    color: #555;
-    padding: 5px 0;
+    color: #2c3e50;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+li:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }

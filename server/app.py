@@ -5,19 +5,22 @@ import document
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-@app.route('/')
-def index():
-    return 'Index Page'
 
 @app.route('/calculate_similarity', methods=['POST'])
 def calculate_similarity():
     data = request.json
     query_counts = data.get('wordCounts', {})
 
-    # Get similarity scores
-    similarity_scores = document.get_similarity_scores(query_counts)
+    # Calculate both cosine similarity and Euclidean distance
+    cosine_similarity_scores = document.get_cosine_similarity_scores(
+        query_counts)
+    euclidean_distance_scores = document.get_euclidean_distance_scores(
+        query_counts)
 
-    return jsonify({'similarities': similarity_scores})
+    return jsonify({
+        'cosine_similarities': cosine_similarity_scores,
+        'euclidean_distances': euclidean_distance_scores
+    })
 
 
 if __name__ == '__main__':
