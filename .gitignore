@@ -2,3 +2,4 @@
 secret.txt
 /.github/workflows
 /server\__pycache__
+/client/build
