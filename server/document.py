@@ -1,5 +1,6 @@
 import numpy as np
-import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import normalize
 
 # Document data
 documents = {
@@ -21,21 +22,13 @@ documents = {
 }
 words = ["bird", "cat", "dog", "tiger"]
 
+# Convert documents to strings for TF-IDF vectorizer
+document_strings = [" ".join(documents[f"D{i}"]) for i in range(1, 16)]
 
-def create_documents_matrix(documents, words):
-    documents_matrix = np.array([])
-    for i in range(1, 16):
-        document = "D" + str(i)
-        document_array = documents[document]
-        document_array = np.array(document_array)
-        document_matrix = np.zeros(len(words))
-        for j in range(len(words)):
-            document_matrix[j] = np.sum(document_array == words[j])
-        if i == 1:
-            documents_matrix = document_matrix
-        else:
-            documents_matrix = np.vstack((documents_matrix, document_matrix))
-    return documents_matrix.transpose().astype(int)
+# Create and normalize the TF-IDF matrix
+vectorizer = TfidfVectorizer(vocabulary=words)
+tfidf_matrix = vectorizer.fit_transform(document_strings).toarray()
+normalized_tfidf_matrix = normalize(tfidf_matrix, norm='l2')
 
 
 def latent_semantic_indexing(documents_matrix, k=2):
@@ -54,39 +47,91 @@ def latent_semantic_indexing(documents_matrix, k=2):
 
 def calculate_cosine_similarity(query_vector, document_matrix):
     similarities = []
-    for doc_vector in document_matrix.T:
-        similarity = np.dot(query_vector, doc_vector) / \
-            (np.linalg.norm(query_vector) * np.linalg.norm(doc_vector))
+    for doc_vector in document_matrix:
+        similarity = np.dot(query_vector, doc_vector) / (
+            np.linalg.norm(query_vector) * np.linalg.norm(doc_vector)
+        )
         similarities.append(similarity)
     return similarities
 
 
 def calculate_euclidean_distance(query_vector, document_matrix):
     distances = []
-    for doc_vector in document_matrix.T:
+    for doc_vector in document_matrix:
         distance = np.linalg.norm(query_vector - doc_vector)
         distances.append(distance)
     return distances
 
 
-# Create the documents matrix
-documents_matrix = create_documents_matrix(documents, words)
+def calculate_pearson_correlation(query_vector, document_matrix):
+    correlations = []
+    for doc_vector in document_matrix:
+        correlation = np.corrcoef(query_vector, doc_vector)[0, 1]
+        correlations.append(correlation)
+    return correlations
 
-# Perform latent semantic indexing
-lsi_matrix = latent_semantic_indexing(documents_matrix)
 
-# Convert to DataFrame for easier handling
-lsi_df = pd.DataFrame(lsi_matrix, index=words, columns=[
-                      f'Doc{i+1}' for i in range(lsi_matrix.shape[1])])
+# Perform latent semantic indexing on both the original and normalized TF-IDF matrices
+lsi_matrix = latent_semantic_indexing(tfidf_matrix)
+normalized_lsi_matrix = latent_semantic_indexing(normalized_tfidf_matrix)
 
-# Function to get similarity scores using cosine similarity
+# Ensure the shape matches the number of documents and words
+assert lsi_matrix.shape == (len(document_strings),
+                            len(words)), "Shape mismatch!"
+assert normalized_lsi_matrix.shape == (
+    len(document_strings), len(words)), "Shape mismatch!"
+
+# Functions for non-normalized data
+
+
 def get_cosine_similarity_scores(query_counts):
     query_vector = np.array([query_counts.get(word, 0) for word in words])
     similarities = calculate_cosine_similarity(query_vector, lsi_matrix)
-    return sorted(zip(lsi_df.columns, similarities), key=lambda x: x[1], reverse=True)
+    sorted_similarities = sorted(zip(
+        [f'Doc{i+1}' for i in range(len(similarities))], similarities), key=lambda x: x[1], reverse=True)
+    return sorted_similarities
 
-# Function to get similarity scores using Euclidean distance
+
 def get_euclidean_distance_scores(query_counts):
     query_vector = np.array([query_counts.get(word, 0) for word in words])
     distances = calculate_euclidean_distance(query_vector, lsi_matrix)
-    return sorted(zip(lsi_df.columns, distances), key=lambda x: x[1], reverse=True)
+    sorted_distances = sorted(zip(
+        [f'Doc{i+1}' for i in range(len(distances))], distances), key=lambda x: x[1], reverse=True)
+    return sorted_distances
+
+
+def get_pearson_correlation_scores(query_counts):
+    query_vector = np.array([query_counts.get(word, 0) for word in words])
+    correlations = calculate_pearson_correlation(query_vector, lsi_matrix)
+    sorted_correlations = sorted(zip(
+        [f'Doc{i+1}' for i in range(len(correlations))], correlations), key=lambda x: x[1], reverse=True)
+    return sorted_correlations
+
+# Functions for normalized data
+
+
+def get_normalized_cosine_similarity_scores(query_counts):
+    query_vector = np.array([query_counts.get(word, 0) for word in words])
+    similarities = calculate_cosine_similarity(
+        query_vector, normalized_lsi_matrix)
+    sorted_similarities = sorted(zip(
+        [f'Doc{i+1}' for i in range(len(similarities))], similarities), key=lambda x: x[1], reverse=True)
+    return sorted_similarities
+
+
+def get_normalized_euclidean_distance_scores(query_counts):
+    query_vector = np.array([query_counts.get(word, 0) for word in words])
+    distances = calculate_euclidean_distance(
+        query_vector, normalized_lsi_matrix)
+    sorted_distances = sorted(zip(
+        [f'Doc{i+1}' for i in range(len(distances))], distances), key=lambda x: x[1], reverse=True)
+    return sorted_distances
+
+
+def get_normalized_pearson_correlation_scores(query_counts):
+    query_vector = np.array([query_counts.get(word, 0) for word in words])
+    correlations = calculate_pearson_correlation(
+        query_vector, normalized_lsi_matrix)
+    sorted_correlations = sorted(zip(
+        [f'Doc{i+1}' for i in range(len(correlations))], correlations), key=lambda x: x[1], reverse=True)
+    return sorted_correlations

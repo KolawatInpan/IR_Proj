@@ -26,18 +26,43 @@ h1 {
 }
 
 .input-wrapper {
-    width: 300px; /* Fixed width for the input section */
-    height: 100%;
-    padding: 20px;
-    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 20px;
 }
 
-.input-wrapper:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+.input-wrapper label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #4CAF50; /* Green color for the label */
+}
+
+.input-wrapper input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #4CAF50; /* Green border for the text box */
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.input-wrapper input[type="text"]:focus {
+  border-color: #45a049; /* Darker green border on focus */
+  outline: none;
+}
+
+.input-wrapper button {
+  background-color: #4CAF50; /* Green background for the button */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.input-wrapper button:hover {
+  background-color: #45a049; /* Darker green background on hover */
 }
 
 .output-wrapper {
@@ -121,4 +146,15 @@ li {
 
 li:hover {
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+.chart-row {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.chart-container {
+  flex: 1;
+  margin: 0 10px;
 }
