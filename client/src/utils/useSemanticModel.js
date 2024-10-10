@@ -18,17 +18,15 @@ const useSemanticModel = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleWordCountChange = (event) => {
-    const { name, value } = event.target;
-    const numericValue = Number(value);
-    setWordCounts({
-      ...wordCounts,
-      [name]: numericValue,
-    });
-  };
-
   const handleQueryChange = (event) => {
-    setQuery(event.target.value);
+    const newQuery = event.target.value;
+    setQuery(newQuery);
+
+    // Count the occurrences of each word in the query
+    const queryWordCounts = countQueryWords(newQuery);
+
+    // Update the word counts state
+    setWordCounts(queryWordCounts);
   };
 
   const handleSubmit = async (event) => {
@@ -38,19 +36,13 @@ const useSemanticModel = () => {
     console.log('Query submitted:', query);
     console.log('Word counts:', wordCounts);
 
-    // Count the occurrences of each word in the query
-    const queryWordCounts = countQueryWords(query);
-
-    // Update the word counts state
-    setWordCounts(queryWordCounts);
-
     try {
       const response = await fetch('http://127.0.0.1:5000/calculate_similarity', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query, wordCounts: queryWordCounts }),
+        body: JSON.stringify({ query, wordCounts }),
       });
 
       if (!response.ok) {
@@ -82,7 +74,6 @@ const useSemanticModel = () => {
     normalizedPearsonCorrelations,
     loading,
     error,
-    handleWordCountChange,
     handleQueryChange,
     handleSubmit,
   };

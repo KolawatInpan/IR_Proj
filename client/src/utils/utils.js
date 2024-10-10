@@ -14,12 +14,22 @@ export const createChartData = (labels, data, label, backgroundColor, borderColo
 });
 
 export const countQueryWords = (query) => {
-  const queryWords = query.toLowerCase().split(/\s+/);
-  const queryWordCounts = { bird: 0, cat: 0, dog: 0, tiger: 0 };
-  queryWords.forEach(word => {
-    if (queryWordCounts.hasOwnProperty(word)) {
-      queryWordCounts[word] += 1;
+  // Remove punctuation and convert to lowercase
+  const cleanedQuery = query.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').toLowerCase();
+  const words = cleanedQuery.split(/\s+/);
+
+  const wordCounts = {
+    bird: 0,
+    cat: 0,
+    dog: 0,
+    tiger: 0,
+  };
+
+  words.forEach((word) => {
+    if (wordCounts.hasOwnProperty(word)) {
+      wordCounts[word] += 1;
     }
   });
-  return queryWordCounts;
+
+  return wordCounts;
 };
