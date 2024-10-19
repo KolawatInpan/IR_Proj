@@ -1,5 +1,6 @@
 /client/node_modules
+/client/build
 secret.txt
 /.github/workflows
 /server\__pycache__
-/client/build
+

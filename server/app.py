@@ -16,6 +16,15 @@ def serve_static(path):
     return send_from_directory(app.static_folder, path)
 
 
+@app.route('/api/documents', methods=['GET'])
+def get_documents():
+    return jsonify(document.documents)
+
+@app.route('/api/lsi_matrix', methods=['GET'])
+def get_lsi_matrix():
+    return jsonify(document.lsi_matrix.tolist())
+
+
 @app.route('/calculate_similarity', methods=['POST'])
 def calculate_similarity():
     data = request.json
@@ -28,24 +37,11 @@ def calculate_similarity():
         query_counts)
     pearson_correlation_scores = document.get_pearson_correlation_scores(
         query_counts)
-
-    # Calculate normalized cosine similarity, Euclidean distance, and Pearson correlation
-    normalized_cosine_similarity_scores = document.get_normalized_cosine_similarity_scores(
-        query_counts)
-    normalized_euclidean_distance_scores = document.get_normalized_euclidean_distance_scores(
-        query_counts)
-    normalized_pearson_correlation_scores = document.get_normalized_pearson_correlation_scores(
-        query_counts)
-
     return jsonify({
         'cosine_similarities': cosine_similarity_scores,
         'euclidean_distances': euclidean_distance_scores,
         'pearson_correlations': pearson_correlation_scores,
-        'normalized_cosine_similarities': normalized_cosine_similarity_scores,
-        'normalized_euclidean_distances': normalized_euclidean_distance_scores,
-        'normalized_pearson_correlations': normalized_pearson_correlation_scores
     })
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

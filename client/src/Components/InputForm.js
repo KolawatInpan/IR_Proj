@@ -1,23 +1,21 @@
 import React from 'react';
+import { TextField, Button, Box } from '@mui/material';
 
-function InputForm({ query, wordCounts, handleWordCountChange, handleQueryChange, handleSubmit }) {
+function InputForm({ query, handleQueryChange, handleSubmit }) {
   return (
-    <div className="input-wrapper">
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Query:
-            <input
-              type="text"
-              name="query"
-              value={query}
-              onChange={handleQueryChange}
-            />
-          </label>
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+      <TextField
+        label="Query"
+        variant="outlined"
+        fullWidth
+        value={query}
+        onChange={handleQueryChange}
+        sx={{ mb: 2 }}
+      />
+      <Button type="submit" variant="contained" color="primary" fullWidth>
+        Submit
+      </Button>
+    </Box>
   );
 }
 
